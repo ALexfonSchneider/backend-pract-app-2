@@ -1,23 +1,42 @@
-from pydantic import BaseModel, Field
+from datetime import datetime
+from pydantic import BaseModel, EmailStr
+
 
 class UserRead(BaseModel):
     id: int
-    username: str = Field(max_length=100)
+    first_name: str
+    last_name: str
+    email: EmailStr
+    join_date: datetime
+    
+    class Config:
+        orm_mode = True
+    
 
 class UserReadList(BaseModel):
     users: list[UserRead]
 
+
 class UserCreate(BaseModel):
-    username: str = Field(max_length=100)
-    password: str = Field(min_length=8, max_length=30)
+    first_name: str
+    last_name: str
+    email: EmailStr
+    password: str
+
 
 class UserCreatedReponse(BaseModel):
     id: int
 
-class UserUpdate(UserRead):
-    pass
 
-class User(UserRead, UserCreate):
-    pass
+class UserUpdate(BaseModel):
+    first_name: str
+    last_name: str
+    email: EmailStr
+
+
+class UserPatch(BaseModel):
+    first_name: str | None
+    last_name: str | None
+    email: EmailStr | None
 
 

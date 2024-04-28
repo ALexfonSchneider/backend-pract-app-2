@@ -30,10 +30,9 @@ router_users = APIRouter(prefix="/users")
 
 @router_users.get("/", response_model=UserReadList)
 async def api_get_users(session: AsyncSession = Depends(get_async_session)):
-    query = select(User)
-    result = await session.execute(query)
+    result = await session.execute(select(User))
     users = result.scalars().all()
-    return UserReadList(users=users)
+    return UserReadList(users=[UserRead(id=user.id, first_name=user.first_name, last_name=user.last_name, email=user.email, join_date=user.join_date) for user in users])
 
 
 @router_users.get("/{user_id}", response_model=UserRead, responses={"404": {"detail": "user does not exist"}})
